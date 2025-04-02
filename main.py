@@ -76,8 +76,10 @@ def estimate_time(task_title):
     prompt = f"Estimate the time (in minutes) needed to complete this task: {task_title}. Respond with only a number."
     
     response = client.models.generate_content(
-        model="gemini-2.0-flash", contents="Explain how AI works in a few words"
+        model="gemini-1.5-pro", contents=prompt
     )
+
+    print(response.text)
     
     if response and response.text:
         match = re.search(r"\d+", response.text)  # ✅ Extract first number from response
