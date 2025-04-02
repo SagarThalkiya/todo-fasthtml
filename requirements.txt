@@ -3,6 +3,5 @@ uvicorn>=0.29
 python-multipart
 fastsql
 google-genai
-hashlib
 re
 hmac
