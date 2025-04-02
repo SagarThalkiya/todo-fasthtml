@@ -3,7 +3,7 @@ from hmac import compare_digest
 from fastsql import Database  # Import FastSQL for PostgreSQL
 from fastsql.core import NotFoundError
 from hashlib import sha256
-import google.generativeai as genai
+from google import genai
 import re
 
 
@@ -174,25 +174,34 @@ def reorder(id: list[int]):
 
 @rt
 def create(todo: Todo):
-    todo.estimated_time = estimate_time(todo.title)  # ✅ Fix AI estimation
+    todo.estimated_time = estimate_time(todo.title)  # ✅ AI-based time estimation
 
     # ✅ Set priority based on keyword detection
     priority_keywords = {"urgent": 3, "important": 2, "optional": 1}
     todo.priority = next((v for k, v in priority_keywords.items() if k in todo.title.lower()), 1)
 
-    # ✅ Improved category detection with regex
+    # ✅ Improved category detection with case-insensitive regex
     category_map = {
-        "work": ["meeting", "project", "deadline"],
-        "personal": ["grocery", "shopping", "call"],
-        "health": ["workout", "exercise", "doctor"],
-        "finance": ["tax", "invoice", "budget"],
+        "work": ["meeting", "project", "deadline", "work", "task"],
+        "personal": ["grocery", "shopping", "call", "birthday", "family"],
+        "health": ["workout", "exercise", "doctor", "meditation", "hospital"],
+        "finance": ["tax", "invoice", "budget", "payment", "salary"],
     }
 
     title_lower = todo.title.lower()
-    todo.category = next(
-        (cat for cat, words in category_map.items() if any(re.search(rf"\b{w}\b", title_lower) for w in words)), 
-        "other"
-    )
+    detected_category = "other"  # Default category
+
+    for category, keywords in category_map.items():
+        for word in keywords:
+            if re.search(word, title_lower, re.IGNORECASE):  # ✅ Case-insensitive matching
+                detected_category = category
+                break
+        if detected_category != "other":
+            break  # ✅ Exit early when a match is found
+
+    todo.category = detected_category  # ✅ Assign detected category
+
+    print(f"🛠 Task Title: {todo.title} → Category: {todo.category}")  # ✅ Debugging
 
     new_todo = todos.insert(todo)
     return new_todo, clear("new-title")
