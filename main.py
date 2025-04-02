@@ -238,4 +238,6 @@ def toggle_done(id: int):
     todos.update(done=not todo.done, id=id)
     return todos[id]
 
-serve()
+serve(
+    port=8080
+)
