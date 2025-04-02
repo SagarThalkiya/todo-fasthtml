@@ -1,4 +1,8 @@
 python-fasthtml>=0.0.8
 uvicorn>=0.29
 python-multipart
-
+fastsql
+google-genaigoogle-genai
+hashlib
+re
+hmac
