@@ -8,7 +8,7 @@ import re
 
 
 API_KEY = "AIzaSyA7A4v58H24mJ4xqtuYAkG--4sqcQJP-3Y"
-genai.configure(api_key=API_KEY)
+client = genai.Client(api_key=API_KEY)
 
 # PostgreSQL database URL
 DB_URL = "postgresql://postgres:ptJenPtGhffopTfeiYCFTUVqTIUNLaCj@centerbeam.proxy.rlwy.net:40602/railway"
@@ -75,8 +75,9 @@ def estimate_time(task_title):
     """Estimate the time required for a task using Gemini AI."""
     prompt = f"Estimate the time (in minutes) needed to complete this task: {task_title}. Respond with only a number."
     
-    model = genai.GenerativeModel("gemini-1.5-pro")
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash", contents="Explain how AI works in a few words"
+    )
     
     if response and response.text:
         match = re.search(r"\d+", response.text)  # ✅ Extract first number from response
