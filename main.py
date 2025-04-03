@@ -5,13 +5,20 @@ from fastsql.core import NotFoundError
 from hashlib import sha256
 from google import genai
 import re
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 
-API_KEY = "AIzaSyA7A4v58H24mJ4xqtuYAkG--4sqcQJP-3Y"
-client = genai.Client(api_key=API_KEY)
-
+# GEMINI AI api key
+API_KEY=os.getenv('API_KEY')
 # PostgreSQL database URL
-DB_URL = "postgresql://postgres:ptJenPtGhffopTfeiYCFTUVqTIUNLaCj@centerbeam.proxy.rlwy.net:40602/railway"
+DB_URL=os.getenv('DB_URL')
+# Custom port
+PORT = int(os.getenv("PORT", 8080))
+
+
+client = genai.Client(api_key=API_KEY)
 
 # Create a database connection
 try:
@@ -241,5 +248,5 @@ def toggle_done(id: int):
     return todos[id]
 
 serve(
-    port=8080
+    port=PORT
 )
